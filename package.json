@@ -13,24 +13,25 @@
     "clean": "rimraf dist",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only ./src/schema",
-    "db:save": "yarn prisma migrate dev --create-only --preview-feature",
-    "db:migrate": "yarn prisma migrate dev --preview-feature",
-    "db:migrate:prod": "yarn prisma migrate deploy --preview-feature",
+    "db:save": "npm run prisma migrate dev --create-only",
+    "db:migrate": "npm run prisma migrate dev",
+    "db:migrate:prod": "yarn prisma migrate deploy",
     "prisma": "dotenv -- prisma"
   },
   "dependencies": {
     "apollo-server": "2.19.2",
     "bcrypt": "5.0.0",
     "dotenv": "8.2.0",
+    "graphql": "^15.8.0",
     "graphql-middleware": "6.0.1",
     "graphql-shield": "7.5.0",
     "jsonwebtoken": "8.5.1",
     "nexus": "1.0.0",
-    "nexus-plugin-prisma": "0.28.0"
+    "nexus-plugin-prisma": "^0.35.0",
+    "prisma": "^3.7.0"
   },
   "devDependencies": {
-    "@prisma/cli": "2.14.0",
-    "@prisma/client": "2.14.0",
+    "@prisma/client": "^3.7.0",
     "@types/bcrypt": "3.0.0",
     "@types/dotenv": "8.2.0",
     "@types/eslint": "7.2.6",
@@ -63,14 +64,5 @@
   "prettier": {
     "semi": false,
     "singleQuote": true
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts}": "npm run lint",
-    "*.{ts,js,json,md}": "prettier --write"
   }
 }

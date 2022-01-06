@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User } from '@prisma/client'
 import { PubSub } from 'apollo-server'
 import { sign, verify } from 'jsonwebtoken'
 import { APP_SECRET, tokens } from './constants'
@@ -9,10 +9,10 @@ export const handleError = (error: any) => {
   throw error
 }
 
-export const generateAccessToken = (userId: number) => {
+export const generateAccessToken = (user: User) => {
   const accessToken = sign(
     {
-      userId,
+      user,
       type: tokens.access.name,
       timestamp: Date.now(),
     },
@@ -28,7 +28,7 @@ export const prisma = new PrismaClient()
 const pubsub = new PubSub()
 
 export const createContext = (ctx: any): Context => {
-  let userId: number
+  let user: User
   try {
     let Authorization = ''
     try {
@@ -41,16 +41,16 @@ export const createContext = (ctx: any): Context => {
     const token = Authorization.replace('Bearer ', '')
     const verifiedToken = verify(token, APP_SECRET) as Token
 
-    if (!verifiedToken.userId && verifiedToken.type !== tokens.access.name)
-      userId = -1
-    else userId = verifiedToken.userId
+    if (!verifiedToken.user && verifiedToken.type !== tokens.access.name)
+      user = null
+    else user = verifiedToken.user
   } catch (e) {
-    userId = -1
+    user = null
   }
   return {
     ...ctx,
     prisma,
     pubsub,
-    userId,
+    user,
   }
 }

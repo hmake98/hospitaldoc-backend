@@ -16,13 +16,4 @@ export const server = new ApolloServer({
   introspection: true,
   debug: isDev(),
   cors: true,
-  // subscriptions: {
-  //   onConnect: (_connectionParams, _websocket, connContext): SocketContext => {
-  //     return {
-  //       req: connContext.request,
-  //       prisma,
-  //       pubsub,
-  //     }
-  //   },
-  // },
 })

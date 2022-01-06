@@ -1,31 +1,46 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DB_URL")
 }
 
 generator prisma {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "linux-musl"]
-  previewFeatures = ["uncheckedScalarInputs"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   password  String
   name      String?
-  posts     Post[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  hospital  Hospital?
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  published Boolean  @default(false)
-  title     String
-  content   String?
-  authorId  Int?
-  author    User?    @relation(fields: [authorId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Hospital {
+  id         Int        @id @default(autoincrement())
+  name       String
+  createdAt  DateTime   @default(now())
+  created_by User       @relation(fields: [userId], references: [id])
+  updatedAt  DateTime   @updatedAt
+  userId     Int        @unique
+  document   Document[]
+}
+
+model Document {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_by Hospital @relation(fields: [hospitalId], references: [id])
+  barcode    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  hospitalId Int
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+  USER
 }
