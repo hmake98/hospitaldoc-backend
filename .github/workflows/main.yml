@@ -30,10 +30,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint and Test
-        run: npm run lint & npm run test --maxWorkers=2
-        env:
-          APP_SECRET: "app_secret"
-
       - name: Build
         run: npm run build
