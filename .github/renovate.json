@@ -1,0 +1,25 @@
+{
+  "extends": ["config:base"],
+  "masterIssue": true,
+  "automerge": true,
+  "schedule": ["every weekend"],
+  "ignoreDeps": ["graphql-request"],
+  "packageRules": [
+    {
+      "packagePatterns": [".*nexus", "@prisma/*"],
+      "groupName": "nexus-and-prisma"
+    },
+    {
+      "packagePatterns": ["^@types/", "typesync"],
+      "groupName": "ts-types"
+    },
+    {
+      "packagePatterns": ["^eslint", "^@typescript-eslint/"],
+      "groupName": "eslint"
+    },
+    {
+      "packagePatterns": ["^jest", "ts-jest"],
+      "groupName": "test-utils"
+    }
+  ]
+}
