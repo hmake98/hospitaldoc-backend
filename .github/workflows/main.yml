@@ -28,12 +28,12 @@ jobs:
             nodeModules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile && yarn prebuild
+        run: npm install
 
       - name: Lint and Test
-        run: yarn lint & yarn test --maxWorkers=2
+        run: npm run lint & npm run test --maxWorkers=2
         env:
-          APP_SECRET: 'app_secret'
+          APP_SECRET: "app_secret"
 
       - name: Build
-        run: yarn build
+        run: npm run build
