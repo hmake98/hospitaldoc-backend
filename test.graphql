@@ -1,0 +1,70 @@
+# Write your query or mutation here
+mutation createSubAdmin {
+  createSubAdmin(name: "testsub", email: "test@sub.com", password: "sub@123") {
+    accessToken
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation createHospital {
+  createHospital(name: "test hospital", subAdminId: 2) {
+    id
+    name
+    created_by {
+      id
+      name
+      email
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation createDocument {
+  createDocument(
+    name: "test doc"
+    barcode: "12345678"
+    link: "https://www.google.com"
+  ) {
+    id
+  }
+}
+
+mutation {
+  login(email: "test@sub.com", password: "sub@123") {
+    accessToken
+    user {
+      id
+      role
+    }
+  }
+}
+
+query getHospitals {
+  getHospitalList(take: 10, skip: 0) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+
+query getDocuments {
+  getDocumentList(take: 10, skip: 0, hospitalId: 1) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+
+query {
+  getDocumentPresign(fileName:"test.png")
+}
