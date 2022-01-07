@@ -10,6 +10,7 @@ export const handleError = (error: any) => {
 }
 
 export const generateAccessToken = (user: User) => {
+  delete user.password
   const accessToken = sign(
     {
       user,

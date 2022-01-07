@@ -32,6 +32,7 @@ model Hospital {
 model Document {
   id         Int      @id @default(autoincrement())
   name       String
+  link       String
   created_by Hospital @relation(fields: [hospitalId], references: [id])
   barcode    String
   createdAt  DateTime @default(now())
@@ -40,7 +41,7 @@ model Document {
 }
 
 enum Role {
-  CLIENT
   ADMIN
+  SUBADMIN
   USER
 }
