@@ -37,7 +37,7 @@ export const user = extendType({
     t.list.field('getHospitalList', {
       type: 'Hospital',
       args: {
-        limit: nonNull(intArg()),
+        take: nonNull(intArg()),
         skip: nonNull(intArg()),
         search: stringArg(),
       },
@@ -59,7 +59,7 @@ export const user = extendType({
       type: 'Document',
       args: {
         hospitalId: intArg(),
-        limit: nonNull(intArg()),
+        take: nonNull(intArg()),
         skip: nonNull(intArg()),
         barcode: stringArg(),
         search: stringArg(),
