@@ -1,4 +1,4 @@
-import { shield, rule, and, allow } from 'graphql-shield'
+import { shield, rule, and, allow, or } from 'graphql-shield'
 import { Context } from '../types'
 import { handleError } from './helpers'
 import { errors } from './constants'
@@ -43,7 +43,11 @@ export const permissions = shield(
     Query: {
       me: rules.isAuthenticatedUser,
       getHospitalList: and(rules.isAuthenticatedUser, rules.isAdmin),
-      getDocumentList: and(rules.isAuthenticatedUser, rules.isAdmin),
+      getDocumentList: and(
+        rules.isAuthenticatedUser,
+        or(rules.isAdmin, rules.isSubAdmin)
+      ),
+      getSubadminList: and(rules.isAuthenticatedUser, rules.isAdmin),
       getDocumentPresign: and(rules.isAuthenticatedUser, rules.isSubAdmin),
       '*': allow,
     },

@@ -30,6 +30,7 @@ export const Document = objectType({
   definition(t) {
     t.model.id()
     t.model.barcode()
+    t.model.link()
     t.model.name()
     t.model.created_by()
     t.model.createdAt()

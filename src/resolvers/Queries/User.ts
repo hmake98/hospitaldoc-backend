@@ -34,6 +34,34 @@ export const user = extendType({
       },
     })
 
+    t.list.field('getSubadminList', {
+      type: 'User',
+      args: {
+        take: nonNull(intArg()),
+        skip: nonNull(intArg()),
+        search: stringArg(),
+      },
+      async resolve(_parent, { skip, take, search }, ctx) {
+        return ctx.prisma.user.findMany({
+          where: {
+            email: {
+              contains: search,
+              mode: 'insensitive',
+            },
+            name: {
+              contains: search,
+              mode: 'insensitive',
+            },
+            role: {
+              equals: 'SUBADMIN',
+            },
+          },
+          skip,
+          take,
+        })
+      },
+    })
+
     t.list.field('getHospitalList', {
       type: 'Hospital',
       args: {

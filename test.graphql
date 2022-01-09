@@ -65,6 +65,15 @@ query getDocuments {
   }
 }
 
+query getSubadminList {
+  getSubadminList(take: 10, skip: 0) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+
 query {
-  getDocumentPresign(fileName:"test.png")
+  getDocumentPresign(fileName: "test.png")
 }
