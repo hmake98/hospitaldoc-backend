@@ -68,13 +68,17 @@ export const user = extendType({
         take: nonNull(intArg()),
         skip: nonNull(intArg()),
         search: stringArg(),
+        subAdminId: nonNull(intArg()),
       },
-      async resolve(_parent, { skip, take, search }, ctx) {
+      async resolve(_parent, { skip, take, search, subAdminId }, ctx) {
         return ctx.prisma.hospital.findMany({
           where: {
             name: {
               contains: search,
               mode: 'insensitive',
+            },
+            createdBy: {
+              id: subAdminId,
             },
           },
           skip,

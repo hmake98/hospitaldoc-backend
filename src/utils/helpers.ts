@@ -41,7 +41,7 @@ export const createContext = (ctx: any): Context => {
     }
     const token = Authorization.replace('Bearer ', '')
     const verifiedToken = verify(token, APP_SECRET) as Token
-
+    
     if (!verifiedToken.user && verifiedToken.type !== tokens.access.name)
       user = null
     else user = verifiedToken.user

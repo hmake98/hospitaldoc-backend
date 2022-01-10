@@ -9,7 +9,7 @@ import { isDev } from './utils/constants'
 import { createContext } from './utils/helpers'
 
 export const server = new ApolloServer({
-  schema: applyMiddleware(schema, permissions),
+  schema: applyMiddleware(schema),
   context: createContext,
   playground: true,
   tracing: isDev(),

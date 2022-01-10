@@ -13,28 +13,32 @@ model User {
   email     String    @unique
   password  String
   name      String?
-  role      Role      @default(USER)
+  role      Role      @default(SUBADMIN)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   hospital  Hospital?
 }
 
 model Hospital {
-  id         Int        @id @default(autoincrement())
-  name       String
-  createdAt  DateTime   @default(now())
-  created_by User       @relation(fields: [userId], references: [id])
-  updatedAt  DateTime   @updatedAt
-  userId     Int        @unique
-  document   Document[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  createdAt DateTime   @default(now())
+  createdBy User       @relation(fields: [userId], references: [id])
+  updatedAt DateTime   @updatedAt
+  userId    Int        @unique
+  document  Document[]
 }
 
 model Document {
   id         Int      @id @default(autoincrement())
   name       String
   link       String
-  created_by Hospital @relation(fields: [hospitalId], references: [id])
+  createdBy  Hospital @relation(fields: [hospitalId], references: [id])
   barcode    String
+  pages      Int?
+  rackNumber Int?
+  boxNumber  Int?
+  viewCount  Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   hospitalId Int
@@ -43,5 +47,5 @@ model Document {
 enum Role {
   ADMIN
   SUBADMIN
-  USER
+  HOSPITAL
 }

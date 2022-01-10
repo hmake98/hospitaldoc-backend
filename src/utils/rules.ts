@@ -7,6 +7,7 @@ export const rules = {
   isAuthenticatedUser: rule({ cache: 'contextual' })(
     (_parent, _args, ctx: Context) => {
       try {
+        console.log(!ctx.user)
         if (!ctx.user) {
           return handleError(errors.notAuthenticated)
         }
@@ -36,29 +37,52 @@ export const rules = {
       return e
     }
   }),
+  isHospital: rule({ cache: 'contextual' })((_parent, _args, ctx: Context) => {
+    try {
+      if (ctx.user && ctx.user.role !== 'HOSPITAL') {
+        return handleError(errors.notAuthenticated)
+      }
+      return true
+    } catch (e) {
+      return e
+    }
+  }),
 }
 
 export const permissions = shield(
   {
     Query: {
-      me: rules.isAuthenticatedUser,
-      getHospitalList: and(rules.isAuthenticatedUser, rules.isAdmin),
-      getDocumentList: and(
-        rules.isAuthenticatedUser,
-        or(rules.isAdmin, rules.isSubAdmin)
-      ),
-      getSubadminList: and(rules.isAuthenticatedUser, rules.isAdmin),
-      getDocumentPresign: and(rules.isAuthenticatedUser, rules.isSubAdmin),
+      // me: rules.isAuthenticatedUser,
+      // getHospitalList: and(
+      //   rules.isAuthenticatedUser
+      //   // or(rules.isAdmin, rules.isSubAdmin)
+      // ),
+      // getDocumentList: and(
+      //   rules.isAuthenticatedUser
+      //   // or(rules.isAdmin, rules.isSubAdmin, rules.isHospital)
+      // ),
+      // getSubadminList: and(rules.isAuthenticatedUser, rules.isAdmin),
+      // getDocumentPresign: and(
+      //   rules.isAuthenticatedUser
+      //   // or(rules.isAdmin, rules.isSubAdmin)
+      // ),
       '*': allow,
     },
     Mutation: {
-      createHospital: and(rules.isAuthenticatedUser, rules.isAdmin),
-      updateHospital: and(rules.isAuthenticatedUser, rules.isAdmin),
-      deleteHospital: and(rules.isAuthenticatedUser, rules.isAdmin),
-      createDocument: and(rules.isAuthenticatedUser, rules.isSubAdmin),
-      updateDocument: and(rules.isAuthenticatedUser, rules.isSubAdmin),
-      deleteDocument: and(rules.isAuthenticatedUser, rules.isSubAdmin),
-      createSubAdmin: and(rules.isAuthenticatedUser, rules.isAdmin),
+      // createHospital: rules.isAuthenticatedUser,
+      // // or(rules.isAdmin, rules.isSubAdmin)
+      // updateHospital: and(
+      //   rules.isAuthenticatedUser
+      //   // or(rules.isAdmin, rules.isSubAdmin)
+      // ),
+      // deleteHospital: and(
+      //   rules.isAuthenticatedUser
+      //   // or(rules.isAdmin, rules.isSubAdmin)
+      // ),
+      // createDocument: and(rules.isAuthenticatedUser, rules.isSubAdmin),
+      // updateDocument: and(rules.isAuthenticatedUser, rules.isSubAdmin),
+      // deleteDocument: and(rules.isAuthenticatedUser, rules.isSubAdmin),
+      // createSubAdmin: and(rules.isAuthenticatedUser, rules.isAdmin),
       '*': allow,
     },
   },

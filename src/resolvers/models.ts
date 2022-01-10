@@ -18,7 +18,7 @@ export const Hospital = objectType({
   definition(t) {
     t.model.id()
     t.model.name()
-    t.model.created_by()
+    t.model.createdBy()
     t.model.document()
     t.model.createdAt()
     t.model.updatedAt()
@@ -32,7 +32,11 @@ export const Document = objectType({
     t.model.barcode()
     t.model.link()
     t.model.name()
-    t.model.created_by()
+    t.model.boxNumber()
+    t.model.rackNumber()
+    t.model.viewCount()
+    t.model.pages()
+    t.model.createdBy()
     t.model.createdAt()
     t.model.updatedAt()
   },

@@ -62,6 +62,8 @@ export const user = extendType({
             user,
           }
         } catch (e) {
+          console.log(e);
+          
           handleError(errors.userAlreadyExists)
         }
       },
@@ -71,19 +73,35 @@ export const user = extendType({
       type: 'Hospital',
       args: {
         name: nonNull(stringArg()),
+        email: nonNull(stringArg()),
+        password: nonNull(stringArg()),
         subAdminId: nonNull(intArg()),
       },
-      async resolve(_parent, { name, subAdminId }, ctx) {
-        return ctx.prisma.hospital.create({
+      async resolve(_parent, { name, subAdminId, email, password }, ctx) {
+        const hashedPassword = await hash(password, 10)
+        const hospital = await ctx.prisma.hospital.create({
           data: {
             name,
-            created_by: {
+            createdBy: {
               connect: {
                 id: subAdminId,
               },
             },
           },
         })
+        await ctx.prisma.user.create({
+          data: {
+            email,
+            password: hashedPassword,
+            role: 'HOSPITAL',
+            hospital: {
+              connect: {
+                id: hospital.id,
+              },
+            },
+          },
+        })
+        return hospital
       },
     })
 
@@ -101,7 +119,7 @@ export const user = extendType({
           },
           data: {
             name,
-            created_by: subAdminId
+            createdBy: subAdminId
               ? {
                   connect: {
                     id: subAdminId,
@@ -131,16 +149,27 @@ export const user = extendType({
         name: nonNull(stringArg()),
         barcode: nonNull(stringArg()),
         link: nonNull(stringArg()),
+        hospitalId: nonNull(intArg()),
+        pages: intArg(),
+        rackNumber: intArg(),
+        boxNumber: intArg(),
       },
-      async resolve(_parent, { name, barcode, link }, ctx) {
+      async resolve(
+        _parent,
+        { name, barcode, link, hospitalId, pages, rackNumber, boxNumber },
+        ctx
+      ) {
         return ctx.prisma.document.create({
           data: {
             barcode,
             name,
             link,
-            created_by: {
+            pages,
+            rackNumber,
+            boxNumber,
+            createdBy: {
               connect: {
-                userId: ctx.user.id,
+                id: hospitalId,
               },
             },
           },
