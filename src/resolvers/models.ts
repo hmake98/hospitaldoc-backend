@@ -7,21 +7,9 @@ export const User = objectType({
     t.model.name()
     t.model.email()
     t.model.role()
-    t.model.hospital()
+    t.model.subAdminId()
     t.model.updatedAt()
     t.model.createdAt()
-  },
-})
-
-export const Hospital = objectType({
-  name: 'Hospital',
-  definition(t) {
-    t.model.id()
-    t.model.name()
-    t.model.createdBy()
-    t.model.document()
-    t.model.createdAt()
-    t.model.updatedAt()
   },
 })
 

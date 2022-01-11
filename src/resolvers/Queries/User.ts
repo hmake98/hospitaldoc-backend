@@ -52,9 +52,7 @@ export const user = extendType({
               contains: search,
               mode: 'insensitive',
             },
-            role: {
-              equals: 'SUBADMIN',
-            },
+            role: 'SUBADMIN',
           },
           skip,
           take,
@@ -63,7 +61,7 @@ export const user = extendType({
     })
 
     t.list.field('getHospitalList', {
-      type: 'Hospital',
+      type: 'User',
       args: {
         take: nonNull(intArg()),
         skip: nonNull(intArg()),
@@ -71,15 +69,14 @@ export const user = extendType({
         subAdminId: nonNull(intArg()),
       },
       async resolve(_parent, { skip, take, search, subAdminId }, ctx) {
-        return ctx.prisma.hospital.findMany({
+        return ctx.prisma.user.findMany({
           where: {
             name: {
               contains: search,
               mode: 'insensitive',
             },
-            createdBy: {
-              id: subAdminId,
-            },
+            role: 'HOSPITAL',
+            subAdminId,
           },
           skip,
           take,

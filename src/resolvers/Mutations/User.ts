@@ -38,7 +38,7 @@ export const user = extendType({
     })
 
     t.field('createSubAdmin', {
-      type: 'AuthPayload',
+      type: 'User',
       args: {
         name: stringArg(),
         email: nonNull(stringArg()),
@@ -55,22 +55,16 @@ export const user = extendType({
               role: 'SUBADMIN',
             },
           })
-
-          const accessToken = generateAccessToken(user)
-          return {
-            accessToken,
-            user,
-          }
+          return user
         } catch (e) {
-          console.log(e);
-          
+          console.log(e)
           handleError(errors.userAlreadyExists)
         }
       },
     })
 
     t.field('createHospital', {
-      type: 'Hospital',
+      type: 'User',
       args: {
         name: nonNull(stringArg()),
         email: nonNull(stringArg()),
@@ -79,66 +73,51 @@ export const user = extendType({
       },
       async resolve(_parent, { name, subAdminId, email, password }, ctx) {
         const hashedPassword = await hash(password, 10)
-        const hospital = await ctx.prisma.hospital.create({
-          data: {
-            name,
-            createdBy: {
-              connect: {
-                id: subAdminId,
-              },
-            },
-          },
-        })
-        await ctx.prisma.user.create({
+        return ctx.prisma.user.create({
           data: {
             email,
+            name,
             password: hashedPassword,
             role: 'HOSPITAL',
-            hospital: {
-              connect: {
-                id: hospital.id,
-              },
-            },
+            subAdminId,
           },
         })
-        return hospital
       },
     })
 
     t.field('updateHospital', {
-      type: 'Hospital',
+      type: 'User',
       args: {
         name: stringArg(),
-        hospitalId: nonNull(intArg()),
+        email: stringArg(),
+        password: stringArg(),
+        id: nonNull(intArg()),
         subAdminId: intArg(),
       },
-      async resolve(_parent, { name, hospitalId, subAdminId }, ctx) {
-        return ctx.prisma.hospital.update({
+      async resolve(_parent, { name, id, subAdminId, email, password }, ctx) {
+        const hashedPassword = await hash(password, 10)
+        return ctx.prisma.user.update({
           where: {
-            id: hospitalId,
+            id: id,
           },
           data: {
             name,
-            createdBy: subAdminId
-              ? {
-                  connect: {
-                    id: subAdminId,
-                  },
-                }
-              : {},
+            email,
+            password: hashedPassword,
+            subAdminId,
           },
         })
       },
     })
 
     t.field('deleteHospital', {
-      type: 'Hospital',
+      type: 'User',
       args: {
-        hospitalId: nonNull(intArg()),
+        id: nonNull(intArg()),
       },
-      async resolve(_parent, { hospitalId }, ctx) {
-        return ctx.prisma.hospital.delete({
-          where: { id: hospitalId },
+      async resolve(_parent, { id }, ctx) {
+        return ctx.prisma.user.delete({
+          where: { id },
         })
       },
     })
