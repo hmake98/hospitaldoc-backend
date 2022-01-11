@@ -14,5 +14,5 @@ export const server = new ApolloServer({
   tracing: isDev(),
   introspection: true,
   debug: isDev(),
-  cors: false,
+  cors: { origin: '*', credentials: true },
 })
