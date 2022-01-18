@@ -1,7 +1,23 @@
 import { server } from './server'
+import express from 'express'
+import http from 'http'
 
-const PORT = process.env.PORT || 4002
+const PORT = process.env.PORT || 3000
 
-server.listen({ port: PORT }).then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`)
+const app = express()
+
+server.start().then(() => {
+  server.applyMiddleware({
+    app,
+    path: '/',
+    cors: { credentials: true, origin: '*' },
+  })
+
+  const httpServer = http.createServer(app)
+
+  httpServer.listen(PORT, () => {
+    console.log(
+      `🚀 Server ${process.pid} ready at http://localhost:${PORT}${server.graphqlPath}`
+    )
+  })
 })
