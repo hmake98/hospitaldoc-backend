@@ -22,13 +22,43 @@ export const user = extendType({
       },
     })
 
-    t.field('getDocumentPresign', {
+    t.field('putDocumentPresign', {
       type: 'String',
-      args: { fileName: nonNull(stringArg()) },
-      async resolve(_parent, { fileName }, ctx) {
+      args: { fileName: nonNull(stringArg()), docId: nonNull(intArg()) },
+      async resolve(_parent, { fileName, docId }, ctx) {
+        await ctx.prisma.document.update({
+          data: {
+            link: fileName,
+          },
+          where: {
+            id: docId,
+          },
+        })
         return await s3.getSignedUrlPromise('putObject', {
           Bucket: process.env.AWS_BUCKET_NAME,
-          Key: `${ctx.user.id}/${fileName}`,
+          Key: `${docId}/${fileName}`,
+          Expires: 3600,
+        })
+      },
+    })
+
+    t.field('getDocumentPresign', {
+      type: 'String',
+      args: { docId: nonNull(intArg()), fileName: nonNull(stringArg()) },
+      async resolve(_parent, { docId, fileName }, ctx) {
+        if (ctx.user.role === 'HOSPITAL') {
+          await ctx.prisma.document.update({
+            where: {
+              id: docId,
+            },
+            data: {
+              viewCount: { increment: 1 },
+            },
+          })
+        }
+        return await s3.getSignedUrlPromise('getObject', {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: `${docId}/${fileName}`,
           Expires: 3600,
         })
       },
