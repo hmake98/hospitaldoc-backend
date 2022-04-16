@@ -1,4 +1,4 @@
-import { stringArg, extendType, nonNull, intArg } from 'nexus'
+import { stringArg, extendType, nonNull, intArg, nullable } from 'nexus'
 import { compare, hash } from 'bcrypt'
 import { generateAccessToken, handleError } from '../../utils/helpers'
 import { errors } from '../../utils/constants'
@@ -9,7 +9,7 @@ export const user = extendType({
     t.field('login', {
       type: 'AuthPayload',
       args: {
-        email: nonNull(stringArg()),
+        email: nullable(stringArg()),
         password: nonNull(stringArg()),
       },
       async resolve(_parent, { email, password }, ctx) {
@@ -18,8 +18,15 @@ export const user = extendType({
           user = await ctx.prisma.user.findUnique({
             where: {
               email,
-            },
+            }
           })
+          if (!user) {
+            user = await ctx.prisma.user.findUnique({
+              where: {
+                userId: email,
+              }
+            })
+          }
         } catch (e) {
           handleError(errors.invalidUser)
         }
@@ -70,8 +77,33 @@ export const user = extendType({
         email: nonNull(stringArg()),
         password: nonNull(stringArg()),
         subAdminId: nonNull(intArg()),
+        clientName: nonNull(stringArg()),
+        address: nonNull(stringArg()),
+        phone: nonNull(stringArg()),
+        legalName: nonNull(stringArg()),
+        billingAddress: nonNull(stringArg()),
+        panCard: nonNull(stringArg()),
+        gst: nonNull(stringArg()),
+        agreementDuration: nonNull(intArg()),
+        emergencyContactName: nonNull(stringArg()),
+        emergencyContactNumber: nonNull(stringArg()),
       },
-      async resolve(_parent, { name, subAdminId, email, password }, ctx) {
+      async resolve(_parent, {
+        name,
+        subAdminId,
+        email,
+        password,
+        clientName,
+        address,
+        phone,
+        legalName,
+        billingAddress,
+        panCard,
+        gst,
+        agreementDuration,
+        emergencyContactName,
+        emergencyContactNumber
+      }, ctx) {
         const hashedPassword = await hash(password, 10)
         return ctx.prisma.user.create({
           data: {
@@ -80,6 +112,16 @@ export const user = extendType({
             password: hashedPassword,
             role: 'HOSPITAL',
             subAdminId,
+            clientName,
+            address,
+            phone,
+            legalName,
+            billingAddress,
+            panCard,
+            gst,
+            agreementDuration,
+            emergencyContactName,
+            emergencyContactNumber
           },
         })
       },

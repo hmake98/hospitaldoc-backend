@@ -13,9 +13,8 @@
     "clean": "rimraf dist",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only ./src/schema",
-    "db:save": "npm run prisma save dev",
+    "db:save": "npm run prisma db push",
     "db:migrate": "npm run prisma migrate dev",
-    "db:migrate:prod": "yarn prisma migrate deploy",
     "prisma": "dotenv -- prisma"
   },
   "dependencies": {

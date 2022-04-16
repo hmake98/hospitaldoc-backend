@@ -9,15 +9,26 @@ generator prisma {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  password   String
-  name       String?
-  role       Role       @default(SUBADMIN)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  subAdminId Int?
-  Document   Document[]
+  id                     Int        @id @default(autoincrement())
+  userId                 String?    @unique
+  email                  String     @unique
+  password               String
+  name                   String?
+  clientName             String?
+  address                String?
+  phone                  String?
+  legalName              String?
+  billingAddress         String?
+  panCard                String?
+  gst                    String?
+  agreementDuration      Int?
+  emergencyContactName   String?
+  emergencyContactNumber String?
+  role                   Role       @default(ADMIN)
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
+  subAdminId             Int?
+  Document               Document[]
 }
 
 model Document {
