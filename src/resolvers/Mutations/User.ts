@@ -30,7 +30,6 @@ export const user = extendType({
         } catch (e) {
           handleError(errors.invalidUser)
         }
-
         if (!user) handleError(errors.invalidUser)
 
         const passwordValid = await compare(password, user.password)
@@ -48,23 +47,24 @@ export const user = extendType({
       type: 'User',
       args: {
         name: stringArg(),
-        email: nonNull(stringArg()),
+        userId: stringArg(),
+        email: stringArg(),
         password: nonNull(stringArg()),
       },
-      async resolve(_parent, { name, email, password }, ctx) {
+      async resolve(_parent, { name, email, password, userId }, ctx) {
         try {
           const hashedPassword = await hash(password, 10)
           const user = await ctx.prisma.user.create({
             data: {
               name,
               email,
+              userId,
               password: hashedPassword,
               role: 'SUBADMIN',
             },
           })
           return user
         } catch (e) {
-          console.log(e)
           handleError(errors.userAlreadyExists)
         }
       },
@@ -73,6 +73,7 @@ export const user = extendType({
     t.field('createHospital', {
       type: 'User',
       args: {
+        userId: nonNull(stringArg()),
         name: nonNull(stringArg()),
         email: nonNull(stringArg()),
         password: nonNull(stringArg()),
@@ -90,6 +91,7 @@ export const user = extendType({
       },
       async resolve(_parent, {
         name,
+        userId,
         subAdminId,
         email,
         password,
@@ -104,6 +106,12 @@ export const user = extendType({
         emergencyContactName,
         emergencyContactNumber
       }, ctx) {
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            userId,
+          }
+        })
+        if (user) handleError(errors.userAlreadyExists)
         const hashedPassword = await hash(password, 10)
         return ctx.prisma.user.create({
           data: {

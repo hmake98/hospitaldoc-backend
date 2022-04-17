@@ -47,7 +47,8 @@ export const user = extendType({
       args: { docId: nonNull(intArg()), fileName: nonNull(stringArg()) },
       async resolve(_parent, { docId, fileName }, ctx) {
         if (ctx.user.role === 'HOSPITAL') {
-          await ctx.prisma.document.update({
+          console.log(ctx.user.role);
+          const response = await ctx.prisma.document.update({
             where: {
               id: docId,
             },
@@ -55,6 +56,7 @@ export const user = extendType({
               viewCount: { increment: 1 },
             },
           })
+          console.log(response);
         }
         return await s3.getSignedUrlPromise('getObject', {
           Bucket: process.env.AWS_BUCKET_NAME,

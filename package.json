@@ -1,5 +1,5 @@
 {
-  "name": "graphql-auth",
+  "name": "hopitaldoc-backend",
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsnd --no-notify --respawn --transpile-only ./src",
