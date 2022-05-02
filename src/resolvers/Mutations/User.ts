@@ -135,26 +135,20 @@ export const user = extendType({
       },
     })
 
-    t.field('updateHospital', {
+    t.field('updatePassword', {
       type: 'User',
       args: {
-        name: stringArg(),
-        email: stringArg(),
-        password: stringArg(),
+        password: nonNull(stringArg()),
         id: nonNull(intArg()),
-        subAdminId: intArg(),
       },
-      async resolve(_parent, { name, id, subAdminId, email, password }, ctx) {
+      async resolve(_parent, { id, password }, ctx) {
         const hashedPassword = await hash(password, 10)
         return ctx.prisma.user.update({
           where: {
             id: id,
           },
           data: {
-            name,
-            email,
             password: hashedPassword,
-            subAdminId,
           },
         })
       },

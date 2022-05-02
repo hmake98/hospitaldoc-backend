@@ -21,5 +21,5 @@ server.start().then(() => {
     )
   })
 
-  // console.log(hashSync('admin123', genSaltSync()))
+  console.log(hashSync('admin', genSaltSync()))
 })
